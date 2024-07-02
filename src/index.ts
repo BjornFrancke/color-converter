@@ -36,8 +36,6 @@ function rgbToHexValue(red: number, green: number, blue: number) {
             let value = i * 16
             let remaining = color - value
             if ((color - value) <= 16) {
-                //console.log(hexValues[i])
-                //console.log(hexValues[remaining])
                 return hexValues[i].toString() + hexValues[remaining].toString()
             }
 
@@ -49,4 +47,58 @@ function rgbToHexValue(red: number, green: number, blue: number) {
 
 }
 
-console.log(rgbToHexValue(255, 100, 255))
+//0 to 360. 0 (or 360) is red, 120 is green, 240 is blue.
+function rgbToHsl(red: number, green: number, blue: number) {
+    const hue = {
+        red: (red / 255),
+        green: (green / 255),
+        blue: (blue / 255)
+    }
+
+    const rgbArr = [hue.red, hue.green, hue.blue]
+    //Find the minimum and maximum
+    rgbArr.sort()
+    let max = rgbArr[rgbArr.length - 1]
+    let min = rgbArr[0]
+    console.log("max" + max)
+    console.log("min" + min)
+
+    //Luminance
+    const l = (max + min)/2
+
+    let s: number
+    if (min === max) {
+        s = 0
+    } else {
+        if (l <= 0.5) {
+            s = (max - min) / (max + min)
+        } else {
+            s = (max - min) / (2.0 - max - min)
+        }
+    }
+    let h: number
+    if (hue.red === max) {
+        h = (hue.green - hue.blue)/(max-min)
+    } else if (hue.green === max) {
+        h = 2.0 + (hue.blue - hue.red) / (max-min)
+    } else if (hue.blue === max) {
+        h = 4.0 + (hue.red - hue.green) / (max-min)
+    } else {
+        throw new Error("Invalid hue value")
+    }
+    //Convert hue to degrees
+    h *= 60
+    h = Math.ceil(h)
+
+    let S = Math.ceil(s*100)
+    let L = Math.ceil(l*100)
+
+
+
+    return [h, S, L]
+
+}
+
+console.log(rgbToHsl(251, 29, 9))
+
+// 5, 97, 51
